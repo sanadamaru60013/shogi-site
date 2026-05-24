@@ -13,6 +13,16 @@ type komarole = {
   kind: komakind;
   nari: boolean;
 };
+const komaDisplay={
+  FU:"歩",
+  KY:"香",
+  KE:"桂",
+  GI:"銀",
+  KI:"金",
+  KA:"角",
+  HI:"飛",
+  OU:"王"
+}
 import { useState } from "react";
 const createFuRow = (player: playerrole): komarole[] => {
   return Array.from({ length: 9 }, () => ({
@@ -345,7 +355,19 @@ function App() {
                   : "24px",
             }}
           >
-            {piece?.kind}
+            <div
+            style={{
+              transform:
+              piece?.player==="white"
+              ? "rotate(180deg)"
+              : "rotate(0deg)"
+              }}
+              >
+                {piece
+                ? komaDisplay[piece.kind]
+                : ""
+                }
+            </div>
           </div>
         ))
       )}
