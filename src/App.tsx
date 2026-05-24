@@ -142,6 +142,23 @@ function App() {
                 setSelectedKoma({y,x})
                 return;
               }
+              const canmoveKi=(
+                koma:komarole,
+                previousY:number,
+                previousX:number,
+                currentY:number,
+                currentX:number,
+              )=>{
+                if((Math.abs(currentX-previousX)===1 && currentY-previousY===0) || Math.abs(currentY-previousY)===1 && currentX-previousX===0){
+                  return true
+                }else if(koma.player==="white" && Math.abs(currentX-previousX)===1 && currentY-previousY===1){
+                  return true
+                }else if(koma.player==="black" && Math.abs(currentX-previousX)===1 && currentY-previousY===-1){
+                  return true
+                }else{
+                  return false
+                }
+              }
               const canmoveFu=(
                 koma:komarole,
                 previousY:number,
@@ -149,6 +166,7 @@ function App() {
                 currentY:number,
                 currentX:number,
               )=>{
+                if(koma.nari===false){
                 if(koma.player==="white" && currentX-previousX===0 && currentY-previousY===1){
                   return true
                 }
@@ -157,6 +175,9 @@ function App() {
                   }else{
                     return false
                   }
+                }else{
+                  canmoveKi(koma,previousY,previousX,currentY,currentX)
+                }
               }
               const canmoveKy=(
                 koma:komarole,
@@ -165,6 +186,7 @@ function App() {
                 currentY:number,
                 currentX:number,
               )=>{
+                if(koma.nari===false){
                 if(koma.player==="white" && currentX-previousX===0 && currentY-previousY>=1){
                   for(
                     let y =previousY+1;
@@ -189,7 +211,10 @@ function App() {
                 return true
               }else{
                 return false
-              }}
+              }}else{
+                canmoveKi(koma,previousY,previousX,currentY,currentX)
+              }
+            }
               const canmoveKe=(
                 koma:komarole,
                 previousY:number,
@@ -197,20 +222,24 @@ function App() {
                 currentY:number,
                 currentX:number,
               )=>{
+                if(koma.nari=false){
                 if(koma.player==="white" && Math.abs(currentX-previousX)===1 && currentY-previousY===2){
                   return true
                 }else if(koma.player==="black" && Math.abs(currentX-previousX)===1 && currentY-previousY===-2){
                   return true
                 }else{
                   return false
-                }}
+                }}else{
+                  canmoveKi(koma,previousY,previousX,currentY,currentX)
+                }
+              }
               const canmoveGi=(
                 koma:komarole,
                 previousY:number,
                 previousX:number,
                 currentY:number,
                 currentX:number,
-              )=>{
+              )=>{if(koma.nari===false){
                 if(Math.abs(currentX-previousX)===1 && Math.abs(currentY-previousY)===1){
                   return true
                 }else if(koma.player==="white" && currentX-previousX===0 && currentY-previousY===1){
@@ -219,33 +248,23 @@ function App() {
                   return true
                 }else{
                   return false
-                }}
-              const canmoveKi=(
+                }}else{
+                  canmoveKi(koma,previousY,previousX,currentY,currentX)
+                }
+              }
+              const canmoveKa=(
                 koma:komarole,
                 previousY:number,
                 previousX:number,
                 currentY:number,
                 currentX:number,
               )=>{
-                if((Math.abs(currentX-previousX)===1 && currentY-previousY===0) || Math.abs(currentY-previousY)===1 && currentX-previousX===0){
-                  return true
-                }else if(koma.player==="white" && Math.abs(currentX-previousX)===1 && currentY-previousY===1){
-                  return true
-                }else if(koma.player==="black" && Math.abs(currentX-previousX)===1 && currentY-previousY===-1){
-                  return true
-                }else{
-                  return false
-                }
-              }
-              const canmoveKa=(
-                previousY:number,
-                previousX:number,
-                currentY:number,
-                currentX:number,
-              )=>{
                 if(Math.abs(currentY-previousY)!==Math.abs(currentX-previousX)){
+                  if(koma.nari===true && Math.abs(currentY-previousY)*Math.abs(currentX-previousX)<=1){
+                    return true
+                  }else{
                   return false
-                }else{
+                }}else{
                   for(
                     let directionY=(currentY-previousY)/Math.abs(currentY-previousY),
                     y=previousY+directionY,
@@ -262,13 +281,18 @@ function App() {
                 }
               }
               const canmoveHi=(
+                koma:komarole,
                 previousY:number,
                 previousX:number,
                 currentY:number,
                 currentX:number,
               )=>{
                 if((currentY-previousY)*(currentX-previousX)!==0){
+                  if(koma.nari===true && Math.abs(currentY-previousY)*Math.abs(currentX-previousX)===1){
+                    return true
+                  }else{
                   return false
+                }
                 }else if(currentY===previousY){
                   for(
                     let directionX=(currentX-previousX)/Math.abs(currentX-previousX),
@@ -320,20 +344,33 @@ function App() {
                   case "KE":return canmoveKe(koma,previousY,previousX,currentY,currentX)
                   case "GI":return canmoveGi(koma,previousY,previousX,currentY,currentX)
                   case "KI":return canmoveKi(koma,previousY,previousX,currentY,currentX)
-                  case "KA":return canmoveKa(previousY,previousX,currentY,currentX)
-                  case "HI":return canmoveHi(previousY,previousX,currentY,currentX)
+                  case "KA":return canmoveKa(koma,previousY,previousX,currentY,currentX)
+                  case "HI":return canmoveHi(koma,previousY,previousX,currentY,currentX)
                   case "OU":return canmoveOu(previousY,previousX,currentY,currentX)
-                }}
+                }
+              }
                 if(pastKoma===null){
                   return
                 }
-              if(canmove(pastKoma,selectedKoma.y,selectedKoma.x,y,x))
+            if(pastKoma.nari===false){
+              if(canmove(pastKoma,selectedKoma.y,selectedKoma.x,y,x)){
               movekoma(
                 selectedKoma.y,
                 selectedKoma.x,
                 y,
                 x
               )
+              if(pastKoma.nari=false){
+                if(pastKoma.player==="white" && y>=7){
+
+                }
+                if(pastKoma.player==="black" && y<=3){
+
+                }
+              }
+            }
+            }
+            if(pastKoma){}
               setSelectedKoma(null)
             }}
             style={{
