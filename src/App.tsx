@@ -14,14 +14,38 @@ type komarole = {
   nari: boolean;
 };
 const komaDisplay={
-  FU:"歩",
-  KY:"香",
-  KE:"桂",
-  GI:"銀",
-  KI:"金",
-  KA:"角",
-  HI:"飛",
-  OU:"王"
+  FU:{
+    normal:"歩",
+    nari:"と"
+  },
+  KY:{
+    normal:"香",
+    nari:"杏"
+  },
+  KE:{
+    normal:"桂",
+    nari:"圭"
+  },
+  GI:{
+    normal:"銀",
+    nari:"全"
+  },
+  KI:{
+    normal:"金",
+    nari:"金"
+  },
+  KA:{
+    normal:"角",
+    nari:"馬"
+  },
+  HI:{
+    normal:"飛",
+    nari:"龍"
+  },
+  OU:{
+    normal:"王",
+    nari:"王"
+  },
 }
 import { useState } from "react";
 const createFuRow = (player: playerrole): komarole[] => {
@@ -222,7 +246,7 @@ function App() {
                 currentY:number,
                 currentX:number,
               )=>{
-                if(koma.nari=false){
+                if(koma.nari===false){
                 if(koma.player==="white" && Math.abs(currentX-previousX)===1 && currentY-previousY===2){
                   return true
                 }else if(koma.player==="black" && Math.abs(currentX-previousX)===1 && currentY-previousY===-2){
@@ -352,7 +376,7 @@ function App() {
                 if(pastKoma===null){
                   return
                 }
-            if(pastKoma.nari===false){
+            
               if(canmove(pastKoma,selectedKoma.y,selectedKoma.x,y,x)){
               movekoma(
                 selectedKoma.y,
@@ -360,17 +384,16 @@ function App() {
                 y,
                 x
               )
-              if(pastKoma.nari=false){
-                if(pastKoma.player==="white" && y>=7){
+              if(pastKoma.nari===false && (pastKoma?.kind!=="KI" && pastKoma?.kind!=="OU")){
+                if(pastKoma.player==="white" && (y>=7 || selectedKoma.y>=7)){
 
                 }
-                if(pastKoma.player==="black" && y<=3){
+                if(pastKoma.player==="black" && (y<=3 || selectedKoma.y<=3)){
 
                 }
               }
             }
-            }
-            if(pastKoma){}
+            
               setSelectedKoma(null)
             }}
             style={{
@@ -380,6 +403,10 @@ function App() {
               border: "2px solid black",
               justifyContent: "center",
               alignItems: "center",
+              color:
+              piece?.nari===true
+              ? "#ed1a3d"
+              : "black",
               backgroundColor:
                 selectedKoma?.y === y &&
                 selectedKoma?.x === x
@@ -400,8 +427,9 @@ function App() {
               : "rotate(0deg)"
               }}
               >
-                {piece
-                ? komaDisplay[piece.kind]
+                {piece ? piece.nari
+                ? komaDisplay[piece.kind].nari
+                : komaDisplay[piece.kind].normal
                 : ""
                 }
             </div>
